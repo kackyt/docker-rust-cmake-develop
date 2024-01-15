@@ -18,14 +18,10 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: rust-cmake-devel
+  IMAGE_NAME: kackyt/rust-cmake-devel
 
 jobs:
   build:
-    strategy:
-      matrix:
-        target:
-          - i386
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -77,9 +73,9 @@ jobs:
         uses: docker/build-push-action@v5 # v5.0.0
         with:
           context: .
-          file: Dockerfile.${{ matrix.target }}
+          file: Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/${{ matrix.target }}
+          platforms: linux/i386,linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
