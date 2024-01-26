@@ -7,12 +7,8 @@ name: Docker
 
 on:
   workflow_dispatch: {}
-  push:
-    # branches: [ "main" ]
-    # Publish semver tags as releases.
-    tags: [ '*.*.*' ]
-  # pull_request:
-  #  branches: [ "main" ]
+  release:
+    types: [ "published" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -33,11 +29,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: set version number
-        id: set-version
-        run: |
-          echo "version=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")" >> $GITHUB_OUTPUT
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -81,7 +72,7 @@ jobs:
           file: Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/i386,linux/amd64
-          tags: ${{ steps.meta.outputs.tags }},${{ steps.set-version.outputs.version }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
