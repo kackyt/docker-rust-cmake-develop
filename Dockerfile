@@ -9,13 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends cmake build-ess
 RUN if [ "${TARGETARCH}" = "amd64" ]; then apt-get install -y --no-install-recommends libc6-dev-i386 gcc-multilib && rustup target add i686-unknown-linux-gnu; fi
 RUN groupadd -r app && useradd -r -g app app
 RUN mkdir ${HOME}
-COPY . ${APP_PATH}
-WORKDIR ${APP_PATH}
 
-RUN chown app:app ${APP_PATH} -R
 RUN chown app:app ${HOME} -R
 
 USER app
+WORKDIR ${HOME}
 
 ENTRYPOINT [ "/bin/sh", "-c" ]
 CMD ["/bin/bash"]
